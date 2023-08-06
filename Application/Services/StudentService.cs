@@ -7,7 +7,7 @@ namespace Application.Services;
 public class StudentService : IStudentService
 {
     private IStudentServiceProxy _studentServiceProxy;
-    
+
     public StudentService(IStudentServiceProxy studentServiceProxy)
     {
         _studentServiceProxy = studentServiceProxy;
@@ -15,7 +15,10 @@ public class StudentService : IStudentService
 
     public Task<StudentResponseModel> Get(string id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(id))
+            throw new Exception();
+
+        return _studentServiceProxy.GetById(id);
     }
 
     public Task<IEnumerable<StudentResponseModel>> GetAll(int pageSize, int pageNumber,
@@ -28,17 +31,20 @@ public class StudentService : IStudentService
     {
         if (request is null)
             throw new Exception();
-        return await _studentServiceProxy.SendToStudentServiceForAddToMongoDb(request);
+        return await _studentServiceProxy.Create(request);
     }
 
     public Task<string> Update(StudentRequestModel request, string id,
         CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(id) || request is null)
+            throw new Exception();
+
+        return _studentServiceProxy.Updata(id, request, cancellationToken);
     }
 
-    public bool Delete(ulong id, CancellationToken cancellationTok)
+    public async Task<string> Delete(string id, CancellationToken cancellationTok)
     {
-        throw new NotImplementedException();
+        return await _studentServiceProxy.DeleteAsync(id, cancellationTok);
     }
 }
