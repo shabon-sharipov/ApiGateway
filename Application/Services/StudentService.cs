@@ -21,10 +21,15 @@ public class StudentService : IStudentService
         return _studentServiceProxy.GetById(id);
     }
 
-    public Task<IEnumerable<StudentResponseModel>> GetAll(int pageSize, int pageNumber,
+    public async Task<IEnumerable<StudentResponseModel>> GetAll(int pageSize, int pageNumber,
         CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _studentServiceProxy.GetAll(pageSize, pageNumber);
+    }
+
+    public async Task<IEnumerable<StudentResponseModel>> Search(string searchSymbol, CancellationToken cancellationToken)
+    {
+        return await _studentServiceProxy.Search(searchSymbol, cancellationToken);
     }
 
     public async Task<string> Create(StudentRequestModel request, CancellationToken cancellationToken)
