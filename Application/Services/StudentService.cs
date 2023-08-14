@@ -1,6 +1,7 @@
 using Application.Common.interfaces;
 using Application.Requests;
 using Application.Responses;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Services;
 
@@ -8,9 +9,12 @@ public class StudentService : IStudentService
 {
     private IStudentServiceProxy _studentServiceProxy;
 
-    public StudentService(IStudentServiceProxy studentServiceProxy)
+    private readonly ILogger<StudentService> _logger;
+
+    public StudentService(IStudentServiceProxy studentServiceProxy, ILogger<StudentService> logger)
     {
         _studentServiceProxy = studentServiceProxy;
+        _logger = logger;
     }
 
     public Task<StudentResponseModel> Get(string id, CancellationToken cancellationToken)
@@ -27,16 +31,24 @@ public class StudentService : IStudentService
         return await _studentServiceProxy.GetAll(pageSize, pageNumber);
     }
 
-    public async Task<IEnumerable<StudentResponseModel>> Search(string searchSymbol, CancellationToken cancellationToken)
+    public async Task<IEnumerable<StudentResponseModel>> Search(string searchSymbol,
+        CancellationToken cancellationToken)
     {
         return await _studentServiceProxy.Search(searchSymbol, cancellationToken);
     }
 
     public async Task<string> Create(StudentRequestModel request, CancellationToken cancellationToken)
     {
-        if (request is null)
-            throw new Exception();
-        return await _studentServiceProxy.Create(request);
+        try
+        {
+            if (request is null)
+                throw new Exception();
+            return await _studentServiceProxy.Create(request);
+        }
+        catch (Exception e)
+        {
+            throw e;
+        }
     }
 
     public Task<string> Update(StudentRequestModel request, string id,

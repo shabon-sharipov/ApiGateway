@@ -19,19 +19,26 @@ public class StudentServiceProxy : IStudentServiceProxy
 
     public async Task<string> Create(StudentRequestModel studentRequestModel)
     {
-        var json = JsonConvert.SerializeObject(studentRequestModel);
+        try
+        {
+            var json = JsonConvert.SerializeObject(studentRequestModel);
 
-        _client.BaseAddress = new Uri(ApiConstant.BaseUrlStudentService);
-        _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.BaseAddress = new Uri(ApiConstant.BaseUrlStudentService);
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await _client.PostAsync("Student", content);
+            var response = await _client.PostAsync("Student", content);
 
-        if (!response.IsSuccessStatusCode)
-            throw new Exception();
-        var responseJson = await response.Content.ReadAsStringAsync();
-        return responseJson;
+            if (!response.IsSuccessStatusCode)
+                throw new Exception();
+            var responseJson = await response.Content.ReadAsStringAsync();
+            return responseJson;
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
     }
 
     public async Task<StudentResponseModel> GetById(string id)
@@ -39,16 +46,16 @@ public class StudentServiceProxy : IStudentServiceProxy
         _client.BaseAddress = new Uri(ApiConstant.BaseUrlStudentService);
         _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         var content = new StringContent(id, Encoding.UTF8, "application/json");
-        var response = await _client.GetAsync($"Student?id={id}");
+        var result = await _client.GetAsync($"Student?id={id}");
 
-        if (!response.IsSuccessStatusCode)
-            if (!response.IsSuccessStatusCode)
+        if (!result.IsSuccessStatusCode)
+            if (!result.IsSuccessStatusCode)
                 throw new Exception();
 
-        var responseJson = await response.Content.ReadAsStringAsync();
+        var responseJson = await result.Content.ReadAsStringAsync();
 
-        var respons = JsonConvert.DeserializeObject<StudentResponseModel>(responseJson);
-        return respons;
+        var response = JsonConvert.DeserializeObject<StudentResponseModel>(responseJson);
+        return response;
     }
 
     public async Task<string> Updata(string id, StudentRequestModel studentRequestModel,
@@ -101,7 +108,6 @@ public class StudentServiceProxy : IStudentServiceProxy
 
     public async Task<List<StudentResponseModel>> Search(string searchSymbol, CancellationToken cancellationToken)
     {
-       
         _client.BaseAddress = new Uri(ApiConstant.BaseUrlSearchSyncService);
         _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         var response = await _client.GetAsync($"Student/Search?searchSymbol={searchSymbol}");
