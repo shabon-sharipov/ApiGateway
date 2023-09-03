@@ -38,9 +38,9 @@ builder.Services.AddHttpClient(ApiConstant.StudentServiceHttpClient, options =>
     options.BaseAddress = new Uri(builder.Configuration["Endpoints:StudentService"]);
     options.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 });
-builder.Services.AddHttpClient(ApiConstant.SearchSyncServiceHttpClient, options =>
+builder.Services.AddHttpClient(ApiConstant.SearchServiceHttpClient, options =>
 {
-    options.BaseAddress = new Uri(builder.Configuration["Endpoints:SearchSyncService"]);
+    options.BaseAddress = new Uri(builder.Configuration["Endpoints:SearchService"]);
     options.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 });
 

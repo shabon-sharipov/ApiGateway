@@ -54,7 +54,7 @@ public class StudentServiceProxy : IStudentServiceProxy
         return response;
     }
 
-    public async Task<string> Updata(string id, StudentRequestModel studentRequestModel,
+    public async Task<string> Update(string id, StudentRequestModel studentRequestModel,
         CancellationToken cancellationToken)
     {
         var _client = _httpClientFactory.CreateClient(ApiConstant.StudentServiceHttpClient);
@@ -87,7 +87,7 @@ public class StudentServiceProxy : IStudentServiceProxy
 
     public async Task<List<StudentResponseModel>> GetAll(int pageSize = 10, int pageNumber = 1)
     {
-        var _client = _httpClientFactory.CreateClient(ApiConstant.SearchSyncServiceHttpClient);
+        var _client = _httpClientFactory.CreateClient(ApiConstant.SearchServiceHttpClient);
         var response = await _client.GetAsync($"Student?pageSize={pageSize}&pageNumber={pageNumber}");
 
         if (!response.IsSuccessStatusCode)
@@ -101,7 +101,7 @@ public class StudentServiceProxy : IStudentServiceProxy
 
     public async Task<List<StudentResponseModel>> Search(string searchSymbol, CancellationToken cancellationToken)
     {
-        var _client = _httpClientFactory.CreateClient(ApiConstant.SearchSyncServiceHttpClient);
+        var _client = _httpClientFactory.CreateClient(ApiConstant.SearchServiceHttpClient);
         var response = await _client.GetAsync($"Student/Search?searchSymbol={searchSymbol}");
 
         if (!response.IsSuccessStatusCode)

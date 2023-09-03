@@ -57,7 +57,7 @@ public class StudentService : IStudentService
         if (string.IsNullOrEmpty(id) || request is null)
             throw new Exception();
 
-        return _studentServiceProxy.Updata(id, request, cancellationToken);
+        return _studentServiceProxy.Update(id, request, cancellationToken);
     }
 
     public async Task<string> Delete(string id, CancellationToken cancellationTok)
