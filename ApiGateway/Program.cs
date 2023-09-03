@@ -1,5 +1,7 @@
 using System.Net;
+using System.Net.Http.Headers;
 using ApiGateway.Endpoints;
+using Application.Common;
 using Application.Common.interfaces;
 using Application.Gateways;
 using Application.Services;
@@ -8,10 +10,6 @@ using Serilog;
 using Serilog.Sinks.Elasticsearch;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IStudentService, StudentService>();
-builder.Services.AddScoped<IStudentServiceProxy, StudentServiceProxy>();
-builder.Services.AddEndpointsApiExplorer();
 builder.Host.UseSerilog((context, configuration) =>
 {
     configuration.Enrich.FromLogContext()
@@ -29,6 +27,21 @@ builder.Host.UseSerilog((context, configuration) =>
             })
         .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName)
         .ReadFrom.Configuration(context.Configuration);
+});
+
+builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IStudentServiceProxy, StudentServiceProxy>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpClient(ApiConstant.StudentServiceHttpClient, options =>
+{
+    options.BaseAddress = new Uri(builder.Configuration["Endpoints:StudentService"]);
+    options.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+});
+builder.Services.AddHttpClient(ApiConstant.SearchSyncServiceHttpClient, options =>
+{
+    options.BaseAddress = new Uri(builder.Configuration["Endpoints:SearchSyncService"]);
+    options.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 });
 
 var app = builder.Build();

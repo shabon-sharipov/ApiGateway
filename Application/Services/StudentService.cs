@@ -45,9 +45,9 @@ public class StudentService : IStudentService
                 throw new Exception();
             return await _studentServiceProxy.Create(request);
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            throw e;
+            throw;
         }
     }
 
